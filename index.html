@@ -486,5 +486,117 @@
             });
         });
     </script>
+    <div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-content">
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem; color: var(--text-main);">Cookie Governance</h3>
+        <p style="margin-bottom: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+            We use strictly essential cookies to ensure platform security. With your consent, we also use non-essential telemetry to improve our website. No proprietary data is processed. You can review our <a href="Privacy_Policy.html" style="color: var(--accent-blue); text-decoration: underline;">Privacy Policy</a>.
+        </p>
+    </div>
+    <div class="cookie-actions">
+        <button id="accept-essential" class="btn btn-secondary cookie-btn">Essential Only</button>
+        <button id="accept-all" class="btn btn-primary cookie-btn">Accept All</button>
+    </div>
+</div>
+
+<style>
+    /* Cookie Banner Styles */
+    .cookie-banner {
+        position: fixed;
+        bottom: -100%; /* Hidden by default, animated in via JS */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 800px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        z-index: 9999;
+        transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .cookie-banner.show {
+        bottom: 2rem;
+    }
+
+    .cookie-actions {
+        display: flex;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+
+    .cookie-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+        border-radius: var(--radius-md);
+    }
+
+    @media (max-width: 768px) {
+        .cookie-banner {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+            bottom: -150%;
+        }
+        .cookie-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+        .cookie-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const cookieBanner = document.getElementById('cookie-banner');
+        const acceptAllBtn = document.getElementById('accept-all');
+        const acceptEssentialBtn = document.getElementById('accept-essential');
+        
+        // Check if the user has already made a choice
+        const cookieConsent = localStorage.getItem('nordicvista_cookie_consent');
+
+        if (!cookieConsent) {
+            // Show banner after a slight delay for a smoother UX
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 1000);
+        } else if (cookieConsent === 'all') {
+            // If they previously accepted all, load non-essential scripts
+            loadAnalytics();
+        }
+
+        // Action: Accept All
+        acceptAllBtn.addEventListener('click', () => {
+            localStorage.setItem('nordicvista_cookie_consent', 'all');
+            cookieBanner.classList.remove('show');
+            loadAnalytics();
+        });
+
+        // Action: Essential Only
+        acceptEssentialBtn.addEventListener('click', () => {
+            localStorage.setItem('nordicvista_cookie_consent', 'essential');
+            cookieBanner.classList.remove('show');
+            // Do NOT load analytics
+        });
+
+        // Function to inject telemetry/analytics ONLY if consent is given
+        function loadAnalytics() {
+            console.log("Analytics loaded. User has granted explicit consent.");
+            // Paste your Google Analytics or tracking scripts here.
+            // Example:
+            // const script = document.createElement('script');
+            // script.src = "https://www.googletagmanager.com/gtag/js?id=YOUR-ID";
+            // document.head.appendChild(script);
+        }
+    });
+</script>
 </body>
 </html>
